@@ -1,0 +1,48 @@
+version: '3'
+
+# running command inside docker container --> docker-compose exec web python manage.py migrate
+ 
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    expose:
+      - '8000'
+    restart: always
+   
+    command: >
+      sh -c "python3 manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - ./.env.dev
+    volumes:
+       - ./:/usr/src/app
+  
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
+  react:
+    build:
+      context: ./frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=true # create-ui-app <= 5.x
+      - WATCHPACK_POLLING=true # create-ui-app >= 5.x
+      - WDS_SOCKET_PORT=0 # The mapped port on your host machine
+      
+    ports: 
+     - '3000:3000'
+    container_name: react-ui
+    stdin_open: true
+    volumes:
+       - ./frontend:/usr/src/app/frontend
+       - /usr/src/app/frontend/node_modules
+    depends_on:
+      - app
+
+volumes:
+  postgres_data:

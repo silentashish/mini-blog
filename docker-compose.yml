@@ -1,0 +1,27 @@
+version: '3'
+ 
+services:
+  react:
+      build:
+        context: ./frontend
+        dockerfile: ./Dockerfile.production
+      ports: 
+       - '80:80'
+      environment:
+        - NGINX_PORT=80
+      depends_on:
+        - app
+
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.production
+    ports:
+      - "8000:8000"
+    expose:
+      - '8000'
+    command: >
+      sh -c "python3 manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - ./.env.dev
+    

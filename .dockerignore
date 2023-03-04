@@ -6,4 +6,6 @@ env
 **/__pycache__
 **/.DS_Store
 **/.csv
+s3data/
 .idea
+frontend/
