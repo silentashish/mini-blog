@@ -36,6 +36,7 @@ REST_FRAMEWORK = {
 }
 
 INSTALLED_APPS = [
+    "api",
     "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -56,6 +57,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "miniblog.urls"
+
+ALLOWED_HOSTS = ["*"]
 
 TEMPLATES = [
     {

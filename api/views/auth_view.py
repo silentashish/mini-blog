@@ -15,6 +15,9 @@ def user_sign_in(request):
         email = request_body["email"]
         password = request_body["password"]
 
+        print(email)
+        print(password)
+
         return Response({"res": True, "data": []}, status=status.HTTP_200_OK)
     else:
         return Response(
