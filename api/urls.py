@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views import auth_view
+from api.views import auth_view, tweet_view
 
 auth_urls = [
     path("auth/signin", auth_view.user_sign_in),
@@ -10,4 +10,9 @@ auth_urls = [
     path("auth/createnewpassword", auth_view.create_new_password),
 ]
 
-urlpatterns = auth_urls
+tweet_urls = [
+    path("tweet/add", tweet_view.create_new_tweet),
+    path("tweet/all", tweet_view.get_all_tweet),
+]
+
+urlpatterns = auth_urls + tweet_urls

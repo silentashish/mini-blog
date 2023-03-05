@@ -8,8 +8,7 @@ from datetime import datetime
 class MyUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
         """
-        Creates and saves a User with the given email, date of
-        birth and password.
+        Creates and saves a User with the given email,username,password.
         """
         if not email:
             raise ValueError("Users must have an email address")
@@ -25,8 +24,7 @@ class MyUserManager(BaseUserManager):
 
     def create_superuser(self, email, username, password=None):
         """
-        Creates and saves a superuser with the given email, date of
-        birth and password.
+        Creates and saves a superuser with the given email, username and password.
         """
         user = self.create_user(
             email,
@@ -80,3 +78,37 @@ class MyUser(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class Tweet(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    text = models.CharField(max_length=280)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class TweetImages(models.Model):
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="images/", blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class TweetReplies(models.Model):
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    text = models.CharField(max_length=280)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class TweetLike(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="like_set")
+    tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name="like_set")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class UserFollower(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name="following")
+    follower = models.ForeignKey(
+        MyUser, on_delete=models.CASCADE, related_name="follower"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)

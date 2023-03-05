@@ -8,7 +8,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
-from api.models import MyUser
+from api.models import MyUser, Tweet, TweetImages, TweetLike, UserFollower
 
 
 class UserCreationForm(forms.ModelForm):
@@ -105,6 +105,10 @@ class UserAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(MyUser, UserAdmin)
+admin.site.register(Tweet)
+admin.site.register(TweetImages)
+admin.site.register(TweetLike)
+admin.site.register(UserFollower)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

@@ -209,9 +209,13 @@ def complete_profile(request):
         user = Token.objects.get(key=request.auth.key).user
 
         profile_image = request_body["profile_image"]
+        first_name = request_body["first_name"]
+        last_name = request_body["last_name"]
 
         try:
             user.profile_picture = profile_image
+            user.first_name = first_name
+            user.last_name = last_name
             user.save()
         except Exception as ex:
             return Response(
