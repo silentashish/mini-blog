@@ -2,6 +2,8 @@ from django.db import models
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+from datetime import datetime
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
@@ -49,11 +51,16 @@ class MyUser(AbstractBaseUser):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    # This field will be use for password reset
+    password_reset_token = models.CharField(blank=True, max_length=30)
+    reset_start_time = models.DateTimeField(
+        default=datetime.now(), blank=True, auto_now=False, auto_now_add=False
+    )
 
     objects = MyUserManager()
 
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email"]
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         return self.email

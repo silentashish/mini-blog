@@ -78,6 +78,8 @@ class UserAdmin(BaseUserAdmin):
         "is_admin",
         "profile_picture",
         "is_verified",
+        "password_reset_token",
+        "reset_start_time",
     )
     list_filter = ("is_admin", "is_verified")
     fieldsets = (

@@ -1,6 +1,6 @@
 version: '3'
 
-# running command inside docker container --> docker-compose exec web python manage.py migrate
+# running command inside docker container --> docker-compose exec app python manage.py migrate
  
 services:
   app:

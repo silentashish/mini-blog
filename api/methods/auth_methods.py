@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 
 def create_new_user(username, email, password):
     """Taker username, email and password and create the new user"""
-    user = MyUser.objects.create_user(username, email, password)
+    user = MyUser.objects.create_user(username=username, email=email, password=password)
     user.save()
 
 
@@ -16,15 +16,13 @@ def authenticate_user(email, password):
         user: False if not authenticated user data as user if sucess
     """
 
-    user = authenticate(email=email, password=password)
+    user = authenticate(username=email, password=password)
 
     if user is not None:
-        return False
-    else:
-        token, created = Token.objects.get_or_create(
-            user=MyUser.objects.get(email=email)
-        )
+        token, created = Token.objects.get_or_create(user=user)
         return token.key
+
+    return False
 
 
 def update_profile(image, email):

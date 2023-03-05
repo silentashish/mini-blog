@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
     "PAGE_SIZE": 10,
 }
 
@@ -145,3 +148,12 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "apikey"  # Name for all the SenGrid accounts
+EMAIL_HOST_PASSWORD = (
+    "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"
+)
+LOGIN_REDIRECT_URL = "success"
