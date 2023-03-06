@@ -45,7 +45,7 @@ def user_sign_in(request):
         if user_authenticate == False:
             return Response(
                 {"res": False, "data": "check username or password"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status=status.HTTP_404_NOT_FOUND,
             )
         else:
             return Response(
@@ -54,7 +54,7 @@ def user_sign_in(request):
     else:
         return Response(
             {"res": False, "data": "Method Not Allowed"},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status=status.HTTP_404_NOT_FOUND,
         )
 
 
@@ -125,7 +125,7 @@ def reset_password(request):
                 + "\n"
                 + "You Can click on this link to change your password."
                 + "\n"
-                + "http://localhost:4000/resetpassword?token="
+                + "http://localhost:3000/resetpassword?token="
                 + hex_value,
                 "072bex406.ashish@pcampus.edu.np",  # Admin
                 [
@@ -140,7 +140,10 @@ def reset_password(request):
             )
 
         return Response(
-            {"res": True, "data": "Reset link send to email."},
+            {
+                "res": True,
+                "data": "Reset link send to email. Check your email to create new password.",
+            },
             status=status.HTTP_200_OK,
         )
     else:
@@ -168,6 +171,8 @@ def create_new_password(request):
 
         try:
             user = MyUser.objects.get(password_reset_token=token)
+
+            print(user, new_password)
 
             if user is not None:
                 user.password_reset_token = ""

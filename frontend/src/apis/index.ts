@@ -1,21 +1,25 @@
-import { useInfiniteQuery, useQuery } from "react-query";
 import axios from "axios";
 
-const BASE_URL = "https://api.punkapi.com/v2/beers?per_page=10";
+const apiClient = axios.create({
+  baseURL: "api/v1/",
+  headers: {
+    "Content-type": "application/json",
+    Accept: "application/json",
+  },
+});
 
-const fetchData = async (page: number) => {
-  const { data } = await axios.get(BASE_URL + `&page=${page ?? 1}`);
-  return { data, page: page ?? 1 };
-};
+apiClient.defaults.xsrfCookieName = "csrftoken";
+apiClient.defaults.xsrfHeaderName = "X-CSRFToken";
 
-export const useAllBeer = () => {
-  return useInfiniteQuery(
-    ["allbeer"],
-    ({ pageParam = 1 }) => fetchData(pageParam),
-    {
-      getNextPageParam: (lastPage) => {
-        return (lastPage?.page ?? 1) + 1;
-      },
-    }
-  );
-};
+apiClient.interceptors.response.use(
+  function (response: any) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    return response.data;
+  },
+  function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    return Promise.reject(error.response.data);
+  }
+);
+
+export { apiClient };
