@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Tweet, MyUser, TweetImages
+from api.models import Tweet, MyUser, TweetImages, TweetReplies, TweetLike
 
 # Serializer related to the auth section
 class SigninSerializer(serializers.Serializer):
@@ -46,7 +46,14 @@ class CreateTweetSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
-        fields = ["username", "email", "profile_picture", "first_name", "last_name"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "profile_picture",
+            "first_name",
+            "last_name",
+        ]
 
 
 class TweetImageSerializer(serializers.ModelSerializer):
@@ -61,3 +68,33 @@ class TweetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tweet
         fields = ["id", "user", "created_at", "text"]
+
+
+class TweetRepliesSerializer(serializers.Serializer):
+    message = serializers.CharField(required=True)
+    tweet = serializers.IntegerField(required=True)
+    parent = serializers.IntegerField(required=False, allow_null=True)
+
+
+class TweetReplyModelSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = TweetReplies
+        fields = ["id", "user", "created_at", "text"]
+
+
+class TweetLikesSerializer(serializers.Serializer):
+    action = serializers.BooleanField(required=True)
+    tweet = serializers.IntegerField(required=True)
+
+
+class TweetLikesModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TweetLike
+        fields = ["id"]
+
+
+class UserFollowSerializer(serializers.Serializer):
+    user = serializers.IntegerField(required=True)
+    action = serializers.BooleanField(required=True)

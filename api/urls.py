@@ -13,6 +13,12 @@ auth_urls = [
 tweet_urls = [
     path("tweet/add", tweet_view.create_new_tweet),
     path("tweet/all", tweet_view.get_all_tweet),
+    path("tweet/reply", tweet_view.add_tweet_replies),
+    path("tweet/like", tweet_view.like_dislike_tweet),
 ]
 
-urlpatterns = auth_urls + tweet_urls
+user_urls = [
+    path("user/follow", tweet_view.follow_unfollow_user),
+]
+
+urlpatterns = auth_urls + tweet_urls + user_urls

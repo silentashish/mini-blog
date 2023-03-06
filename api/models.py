@@ -94,7 +94,7 @@ class TweetImages(models.Model):
 
 class TweetReplies(models.Model):
     tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE)
-    parent = models.ForeignKey("self", on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     text = models.CharField(max_length=280)
     created_at = models.DateTimeField(auto_now_add=True)
