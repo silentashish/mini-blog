@@ -134,7 +134,7 @@ export const TweetGrid: React.FC<any> = ({
         )}
         <Flex alignItems={"flex-start"} mt={backNav ? 5 : undefined}>
           <Avatar
-            size={"lg"}
+            size={["md", "lg"]}
             src={user.profile_picture}
             mb={4}
             pos={"relative"}
@@ -142,8 +142,8 @@ export const TweetGrid: React.FC<any> = ({
           />
           <Box mt={1} ml={3} width={"100%"}>
             <Flex justify={"space-between"} width={"100%"}>
-              <Flex align={"center"}>
-                <Heading fontSize={"xl"}>
+              <Flex align={"center"} flexWrap={"wrap"}>
+                <Heading fontSize={["lg", "xl"]}>
                   {user.first_name} {user.last_name}
                 </Heading>
                 <Text ml={1} color={"gray.500"}>
@@ -152,7 +152,7 @@ export const TweetGrid: React.FC<any> = ({
                 <Text ml={1} color={"gray.500"}>
                   .
                 </Text>
-                <Text ml={1} color={"gray.500"}>
+                <Text ml={1} color={"gray.500"} fontSize={["sm"]}>
                   {date.toString()}
                 </Text>
               </Flex>
@@ -180,7 +180,7 @@ export const TweetGrid: React.FC<any> = ({
 
             <Gallery
               rowHeight={320}
-              maxRows={3}
+              maxRows={1}
               images={images.reduce((acc: Array<any>, item: any) => {
                 return [...acc, { src: item.image }];
               }, [])}

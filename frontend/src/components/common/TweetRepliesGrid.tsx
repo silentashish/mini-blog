@@ -97,12 +97,12 @@ export const TweetRepliesGrid: React.FC<props> = ({ id, refetch }) => {
         bg={background}
         boxShadow={"lg"}
         rounded={"lg"}
-        p={6}
+        p={[3, 6]}
         textAlign={"center"}
       >
         <Flex alignItems={"flex-start"}>
           <Avatar
-            size={"lg"}
+            size={["md", "lg"]}
             src={user.profile_picture}
             mb={4}
             pos={"relative"}
