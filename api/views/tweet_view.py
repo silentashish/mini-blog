@@ -15,6 +15,7 @@ from api.serializers import (
     TweetLikesSerializer,
     TweetLikesModelSerializer,
     UserFollowSerializer,
+    TweetDetailSerializer,
 )
 from api.models import Tweet, TweetImages, TweetReplies, TweetLike, MyUser, UserFollower
 
@@ -94,9 +95,16 @@ def get_all_tweet(request):
                     TweetLike.objects.filter(tweet=tweet["id"]),
                     many=True,
                 ).data
+
+                tweet_liked = TweetLike.objects.filter(user=user, tweet=tweet["id"])
+
+                if tweet_liked:
+                    tweet["liked"] = True
+                else:
+                    tweet["liked"] = False
                 # replies = TweetReplies.objects.filter(tweet=tweet["id"], parent=None)
                 tweet["images"] = images
-                tweet["replies"] = replies
+                tweet["replies"] = len(replies)
                 tweet["likes"] = len(likes)
 
             return Response(
@@ -233,6 +241,67 @@ def follow_unfollow_user(request):
                 userfollower.delete()
             return Response(
                 {"res": True, "data": "Follow update action completed"},
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as ex:
+            return Response(
+                {"res": False, "data": str(ex)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+    else:
+        return Response(
+            {"res": False, "data": "Method Not Allowed"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def get_one_tweet(request):
+    if request.method == "POST":
+        user = Token.objects.get(key=request.auth.key).user
+
+        request_body = request.data
+
+        serializer = TweetDetailSerializer(data=request_body)
+        if not serializer.is_valid():
+            return Response(
+                {"res": False, "data": serializer.errors},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        tweet_id = request_body["id"]
+
+        try:
+            tweet = Tweet.objects.get(id=tweet_id)
+
+            serialize_tweet = TweetSerializer(tweet).data
+
+            images = TweetImageSerializer(
+                TweetImages.objects.filter(tweet=tweet), many=True
+            ).data
+            replies = TweetReplyModelSerializer(
+                TweetReplies.objects.filter(tweet=tweet, parent=None).order_by(
+                    "-created_at"
+                ),
+                many=True,
+            ).data
+            likes = TweetLikesModelSerializer(
+                TweetLike.objects.filter(tweet=tweet), many=True
+            ).data
+            tweet_liked = TweetLike.objects.filter(user=user, tweet=tweet)
+
+            if tweet_liked:
+                serialize_tweet["liked"] = True
+            else:
+                serialize_tweet["liked"] = False
+
+            serialize_tweet["images"] = images
+            serialize_tweet["replies"] = len(replies)
+            serialize_tweet["replies_list"] = replies
+            serialize_tweet["likes"] = len(likes)
+
+            return Response(
+                {"res": True, "data": serialize_tweet},
                 status=status.HTTP_201_CREATED,
             )
         except Exception as ex:

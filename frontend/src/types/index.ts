@@ -26,9 +26,14 @@ export interface UserType {
   email: string;
   token: string;
   username: string;
+  is_admin: boolean;
 }
 
 export interface CompleteProfileType {
   first_name: string;
   last_name: string;
+}
+
+export interface TweetType {
+  message: string;
 }

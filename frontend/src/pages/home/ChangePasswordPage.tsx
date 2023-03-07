@@ -145,6 +145,7 @@ export const ChangePasswordPage: React.FC<props> = () => {
                       type={show ? "text" : "password"}
                       {...register("new_password", {
                         required: "new_password is required",
+                        minLength: 5,
                       })}
                     />
                     <InputRightElement right={0}>

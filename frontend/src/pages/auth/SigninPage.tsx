@@ -119,6 +119,7 @@ export const SigninPage: React.FC<props> = () => {
                       type={show ? "text" : "password"}
                       {...register("password", {
                         required: "Password is required",
+                        minLength: 5,
                       })}
                     />
                     <InputRightElement right={0}>

@@ -1,7 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthContext } from "../context";
 import { useAuth } from "../hooks";
-import { ChangePasswordPage, CompleteProfilePage, HomePage } from "../pages";
+import {
+  ChangePasswordPage,
+  CompleteProfilePage,
+  HomePage,
+  TweetDetailPage,
+} from "../pages";
 import {
   ForgetPasswordPage,
   LandingPage,
@@ -45,6 +50,10 @@ const MainApp = () => {
       <Route
         path={"/completeProfile"}
         element={user ? <CompleteProfilePage /> : <Navigate to="/" />}
+      />
+      <Route
+        path={"/detail"}
+        element={user ? <TweetDetailPage /> : <Navigate to="/" />}
       />
     </Routes>
   );

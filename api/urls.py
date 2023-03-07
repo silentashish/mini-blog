@@ -15,6 +15,7 @@ tweet_urls = [
     path("tweet/all", tweet_view.get_all_tweet),
     path("tweet/reply", tweet_view.add_tweet_replies),
     path("tweet/like", tweet_view.like_dislike_tweet),
+    path("tweet/one", tweet_view.get_one_tweet),
 ]
 
 user_urls = [

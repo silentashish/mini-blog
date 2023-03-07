@@ -38,9 +38,9 @@ class CreatePasswordSerializer(serializers.Serializer):
 
 class CreateTweetSerializer(serializers.Serializer):
     message = serializers.CharField(required=True)
-    image1 = serializers.ImageField(required=False)
-    image2 = serializers.ImageField(required=False)
-    image3 = serializers.ImageField(required=False)
+    image1 = serializers.ImageField(required=False, allow_null=True)
+    image2 = serializers.ImageField(required=False, allow_null=True)
+    image3 = serializers.ImageField(required=False, allow_null=True)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -53,6 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
             "profile_picture",
             "first_name",
             "last_name",
+            "is_admin",
         ]
 
 
@@ -93,6 +94,10 @@ class TweetLikesModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = TweetLike
         fields = ["id"]
+
+
+class TweetDetailSerializer(serializers.Serializer):
+    id = serializers.IntegerField(required=True)
 
 
 class UserFollowSerializer(serializers.Serializer):
