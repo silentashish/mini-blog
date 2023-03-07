@@ -29,9 +29,11 @@ import { useMutation } from "react-query";
 import { apiClient } from "../../apis";
 import { TweetImagePicker } from "./TweetImagePicker";
 
-interface props {}
+interface props {
+  refetch: () => void;
+}
 
-export const TweetAddGrid: React.FC<any> = ({}) => {
+export const TweetAddGrid: React.FC<any> = ({ refetch }) => {
   const { user } = useAuth();
   const toast = useToast();
 
@@ -65,7 +67,7 @@ export const TweetAddGrid: React.FC<any> = ({}) => {
         setImage2(null);
         setImage3(null);
         toast({
-          title: "Tweet Add",
+          title: "Tweet Added",
           description:
             typeof data.data === "string"
               ? data.data
@@ -74,6 +76,7 @@ export const TweetAddGrid: React.FC<any> = ({}) => {
           duration: 3000,
           isClosable: true,
         });
+        refetch && refetch();
       },
       onError: (data: any) => {
         toast({

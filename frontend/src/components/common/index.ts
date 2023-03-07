@@ -5,3 +5,4 @@ export * from "./TweetGrid";
 export * from "./TweetAddGrid";
 export * from "./TweetRepliesGrid";
 export * from "./ReplyGrid";
+export * from "./UserGrid";

@@ -9,6 +9,8 @@ import {
   useColorModeValue,
   Flex,
   Icon,
+  Button,
+  useToast,
 } from "@chakra-ui/react";
 import { calculateSince } from "../../functions";
 import { Gallery } from "react-grid-gallery";
@@ -18,6 +20,7 @@ import { apiClient } from "../../apis";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineChevronLeft } from "react-icons/md";
+import { useAuth } from "../../hooks";
 
 export const TweetGrid: React.FC<any> = ({
   user,
@@ -29,10 +32,48 @@ export const TweetGrid: React.FC<any> = ({
   id,
   liked,
   backNav = false,
+  showDelete,
+  refetch,
 }) => {
+  let { user: currentUser } = useAuth();
   let date = calculateSince(created_at);
 
+  let toast = useToast();
+
   let navigate = useNavigate();
+
+  const TweetDeleteMutation = useMutation(
+    (data: any) => {
+      return apiClient.post("/tweet/delete", data);
+    },
+    {
+      onSuccess: (data: any) => {
+        refetch && refetch();
+        toast({
+          title: "Tweet Delete",
+          description:
+            typeof data.data === "string"
+              ? data.data
+              : JSON.stringify(data.data),
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+      onError: (data: any) => {
+        toast({
+          title: "Tweet Delete",
+          description:
+            typeof data.data === "string"
+              ? data.data
+              : JSON.stringify(data.data),
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      },
+    }
+  );
 
   const LikeDislikeMutation = useMutation(
     (data: any) => {
@@ -60,6 +101,10 @@ export const TweetGrid: React.FC<any> = ({
     );
     setTweetLiked(!tweetLiked);
     setLikeCount((c) => (tweetLiked ? c - 1 : c + 1));
+  };
+
+  const goToProfile = () => {
+    navigate(`/user?user=${user.id}`);
   };
 
   return (
@@ -93,21 +138,35 @@ export const TweetGrid: React.FC<any> = ({
             src={user.profile_picture}
             mb={4}
             pos={"relative"}
+            onClick={goToProfile}
           />
-          <Box mt={1} ml={3}>
-            <Flex align={"center"}>
-              <Heading fontSize={"xl"}>
-                {user.first_name} {user.last_name}
-              </Heading>
-              <Text ml={1} color={"gray.500"}>
-                @{user.username}
-              </Text>
-              <Text ml={1} color={"gray.500"}>
-                .
-              </Text>
-              <Text ml={1} color={"gray.500"}>
-                {date.toString()}
-              </Text>
+          <Box mt={1} ml={3} width={"100%"}>
+            <Flex justify={"space-between"} width={"100%"}>
+              <Flex align={"center"}>
+                <Heading fontSize={"xl"}>
+                  {user.first_name} {user.last_name}
+                </Heading>
+                <Text ml={1} color={"gray.500"}>
+                  @{user.username}
+                </Text>
+                <Text ml={1} color={"gray.500"}>
+                  .
+                </Text>
+                <Text ml={1} color={"gray.500"}>
+                  {date.toString()}
+                </Text>
+              </Flex>
+              {user.id === currentUser?.id && showDelete && (
+                <Button
+                  size={"sm"}
+                  colorScheme={"red"}
+                  onClick={() =>
+                    TweetDeleteMutation.mutate(JSON.stringify({ id }))
+                  }
+                >
+                  Delete
+                </Button>
+              )}
             </Flex>
 
             <Text

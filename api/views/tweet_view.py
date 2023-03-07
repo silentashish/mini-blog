@@ -16,6 +16,8 @@ from api.serializers import (
     TweetLikesModelSerializer,
     UserFollowSerializer,
     TweetDetailSerializer,
+    UserDetailSerializer,
+    UserSerializer,
 )
 from api.models import Tweet, TweetImages, TweetReplies, TweetLike, MyUser, UserFollower
 
@@ -302,6 +304,134 @@ def get_one_tweet(request):
 
             return Response(
                 {"res": True, "data": serialize_tweet},
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as ex:
+            return Response(
+                {"res": False, "data": str(ex)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+    else:
+        return Response(
+            {"res": False, "data": "Method Not Allowed"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def get_user_detail(request):
+    if request.method == "POST":
+        user = Token.objects.get(key=request.auth.key).user
+
+        request_body = request.data
+
+        serializer = UserDetailSerializer(data=request_body)
+        if not serializer.is_valid():
+            return Response(
+                {"res": False, "data": serializer.errors},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        user_id = request_body["id"]
+
+        try:
+            own_profile = user.id == user_id
+
+            if own_profile:
+                user_detail = user
+            else:
+                user_detail = MyUser.objects.get(id=user_id)
+
+            all_tweet = TweetSerializer(
+                Tweet.objects.filter(user=user_detail).order_by("-created_at"),
+                many=True,
+            ).data
+
+            for tweet in all_tweet:
+                images = TweetImageSerializer(
+                    TweetImages.objects.filter(tweet=tweet["id"]), many=True
+                ).data
+                replies = TweetReplyModelSerializer(
+                    TweetReplies.objects.filter(tweet=tweet["id"], parent=None),
+                    many=True,
+                ).data
+                likes = TweetLikesModelSerializer(
+                    TweetLike.objects.filter(tweet=tweet["id"]),
+                    many=True,
+                ).data
+
+                tweet_liked = TweetLike.objects.filter(user=user, tweet=tweet["id"])
+
+                if tweet_liked:
+                    tweet["liked"] = True
+                else:
+                    tweet["liked"] = False
+                # replies = TweetReplies.objects.filter(tweet=tweet["id"], parent=None)
+                tweet["images"] = images
+                tweet["replies"] = len(replies)
+                tweet["likes"] = len(likes)
+
+            follower_list = UserFollower.objects.filter(user=user_detail)
+            user_detail_serialize = UserSerializer(user_detail).data
+            user_detail_serialize["followers"] = follower_list.count()
+            isFollowingCheck = UserFollower.objects.filter(
+                user=user_detail, follower=user
+            )
+            user_detail_serialize["is_following"] = True if isFollowingCheck else False
+
+            return Response(
+                {
+                    "res": True,
+                    "data": {"user": user_detail_serialize, "tweets": all_tweet},
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as ex:
+            return Response(
+                {"res": False, "data": str(ex)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+    else:
+        return Response(
+            {"res": False, "data": "Method Not Allowed"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def delete_tweet(request):
+    if request.method == "POST":
+        user = Token.objects.get(key=request.auth.key).user
+
+        request_body = request.data
+
+        serializer = TweetDetailSerializer(data=request_body)
+        if not serializer.is_valid():
+            return Response(
+                {"res": False, "data": serializer.errors},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        tweet_id = request_body["id"]
+
+        try:
+            tweet = Tweet.objects.get(id=tweet_id)
+
+            if tweet.user.id == user.id:
+                tweet.delete()
+
+                return Response(
+                    {
+                        "res": True,
+                        "data": "tweet delete successfully",
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
+            return Response(
+                {
+                    "res": True,
+                    "data": "permission denied",
+                },
                 status=status.HTTP_201_CREATED,
             )
         except Exception as ex:

@@ -94,6 +94,9 @@ export const Navbar: React.FC<props> = ({ hideSignIn = false }) => {
                   </Center>
                   <br />
                   <MenuDivider />
+                  <MenuItem onClick={() => navigate("/profile")}>
+                    Profile
+                  </MenuItem>
                   <MenuItem onClick={() => navigate("/changepassword")}>
                     Change Password
                   </MenuItem>

@@ -103,3 +103,7 @@ class TweetDetailSerializer(serializers.Serializer):
 class UserFollowSerializer(serializers.Serializer):
     user = serializers.IntegerField(required=True)
     action = serializers.BooleanField(required=True)
+
+
+class UserDetailSerializer(serializers.Serializer):
+    id: serializers.IntegerField(required=True)

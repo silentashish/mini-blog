@@ -1,33 +1,32 @@
 import {
-  Flex,
   Box,
-  FormControl,
-  FormLabel,
-  Input,
-  Checkbox,
-  Stack,
-  Link,
   Button,
-  Heading,
-  Text,
-  useColorModeValue,
+  Checkbox,
   Container,
-  useToast,
+  Flex,
+  FormControl,
   FormErrorMessage,
-  InputRightElement,
-  InputGroup,
+  FormLabel,
+  Heading,
   IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Link,
+  Stack,
+  useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { Navbar } from "../../components";
 
-import { useForm, SubmitHandler } from "react-hook-form";
-import { LoginType } from "../../types";
-import { useMutation } from "react-query";
-import { apiClient } from "../../apis";
-import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../apis";
 import { useAuth } from "../../hooks";
+import { LoginType } from "../../types";
 
 interface props {}
 

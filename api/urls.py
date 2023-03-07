@@ -16,10 +16,12 @@ tweet_urls = [
     path("tweet/reply", tweet_view.add_tweet_replies),
     path("tweet/like", tweet_view.like_dislike_tweet),
     path("tweet/one", tweet_view.get_one_tweet),
+    path("tweet/delete", tweet_view.delete_tweet),
 ]
 
 user_urls = [
     path("user/follow", tweet_view.follow_unfollow_user),
+    path("user/details", tweet_view.get_user_detail),
 ]
 
 urlpatterns = auth_urls + tweet_urls + user_urls

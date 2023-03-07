@@ -13,7 +13,7 @@ export const HomePage: React.FC<props> = () => {
   console.log({ user });
   const navigate = useNavigate();
 
-  const { isLoading, isError, data } = useQuery("alltweet", () => {
+  const { isLoading, isError, data, refetch } = useQuery("alltweet", () => {
     return apiClient.get("tweet/all");
   });
 
@@ -27,7 +27,7 @@ export const HomePage: React.FC<props> = () => {
     <Container maxW={"8xl"}>
       <Navbar />
 
-      <TweetAddGrid />
+      <TweetAddGrid refetch={refetch} />
 
       {isLoading && (
         <Flex justify="center" align={"center"} pt={55} pb={55}>
@@ -35,7 +35,8 @@ export const HomePage: React.FC<props> = () => {
         </Flex>
       )}
 
-      {data?.data && data?.data.map((item: any) => <TweetGrid {...item} />)}
+      {data?.data &&
+        data?.data.map((item: any) => <TweetGrid {...item} key={item.id} />)}
 
       {data?.data && data?.data.length === 0 && (
         <Center py={20}>

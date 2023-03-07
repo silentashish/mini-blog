@@ -16,6 +16,7 @@ import {
 import { UserType } from "../types";
 
 import { useState } from "react";
+import { ProfilePage, UserPage } from "../pages/user";
 
 const MainApp = () => {
   const { user } = useAuth();
@@ -54,6 +55,14 @@ const MainApp = () => {
       <Route
         path={"/detail"}
         element={user ? <TweetDetailPage /> : <Navigate to="/" />}
+      />
+      <Route
+        path={"/profile"}
+        element={user ? <ProfilePage /> : <Navigate to="/" />}
+      />
+      <Route
+        path={"/user"}
+        element={user ? <UserPage /> : <Navigate to="/" />}
       />
     </Routes>
   );
