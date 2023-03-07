@@ -19,6 +19,7 @@ from api.serializers import (
     CompleteProfileSerializer,
     ResetPasswordSerializer,
     CreatePasswordSerializer,
+    UserSerializer,
 )
 
 from django.contrib.auth import authenticate
@@ -40,7 +41,7 @@ def user_sign_in(request):
         email = request_body["email"]
         password = request_body["password"]
 
-        user_authenticate = auth_methods.authenticate_user(email, password)
+        user_authenticate, token = auth_methods.authenticate_user(email, password)
 
         if user_authenticate == False:
             return Response(
@@ -49,7 +50,8 @@ def user_sign_in(request):
             )
         else:
             return Response(
-                {"res": True, "data": user_authenticate}, status=status.HTTP_200_OK
+                {"res": True, "data": {"user": user_authenticate, "token": token}},
+                status=status.HTTP_200_OK,
             )
     else:
         return Response(
@@ -222,16 +224,20 @@ def complete_profile(request):
             user.first_name = first_name
             user.last_name = last_name
             user.save()
+
+            user = UserSerializer(user).data
+
+            return Response(
+                {"res": True, "data": {"user": user}},
+                status=status.HTTP_200_OK,
+            )
+
         except Exception as ex:
             return Response(
                 {"res": False, "data": str(ex)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        return Response(
-            {"res": True, "data": "Profile Updated Successfully"},
-            status=status.HTTP_200_OK,
-        )
     else:
         return Response(
             {"res": False, "data": "Method Not Allowed"},

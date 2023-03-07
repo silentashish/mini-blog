@@ -27,11 +27,14 @@ import { apiClient } from "../../apis";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks";
 
 interface props {}
 
 export const SigninPage: React.FC<props> = () => {
   const toast = useToast();
+
+  const { login } = useAuth();
 
   // Show and hide password
   const [show, setShow] = useState(false);
@@ -51,6 +54,8 @@ export const SigninPage: React.FC<props> = () => {
     },
     {
       onSuccess: (data: any) => {
+        const { user, token } = data.data;
+        login({ ...user, token });
         reset();
         navigate("/home");
       },

@@ -1,6 +1,8 @@
 from api.models import MyUser
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from api.serializers import UserSerializer
+import json
 
 
 def create_new_user(username, email, password):
@@ -20,9 +22,10 @@ def authenticate_user(email, password):
 
     if user is not None:
         token, created = Token.objects.get_or_create(user=user)
-        return token.key
+        user = UserSerializer(user).data
+        return user, token.key
 
-    return False
+    return False, None
 
 
 def update_profile(image, email):

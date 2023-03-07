@@ -19,6 +19,7 @@
     "framer-motion": "^9.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-grid-gallery": "^1.0.0",
     "react-hook-form": "^7.43.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.8.1",
@@ -26,7 +27,7 @@
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },
-  "proxy": "http://app:8000",
+  "proxy": "http://localhost:8000",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

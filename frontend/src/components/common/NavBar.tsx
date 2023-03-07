@@ -17,6 +17,7 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import Logo from "../../assets/logo.png";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks";
 
 interface props {
   hideSignIn?: boolean;
@@ -25,7 +26,8 @@ interface props {
 export const Navbar: React.FC<props> = ({ hideSignIn = false }) => {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
-  const isLoggedIn = false;
+  const { user, logout } = useAuth();
+
   return (
     <>
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4} pl={0}>
@@ -41,7 +43,7 @@ export const Navbar: React.FC<props> = ({ hideSignIn = false }) => {
               </Button>
 
               <Menu>
-                {isLoggedIn ? (
+                {user !== null ? (
                   <MenuButton
                     as={Button}
                     rounded={"full"}
@@ -51,7 +53,10 @@ export const Navbar: React.FC<props> = ({ hideSignIn = false }) => {
                   >
                     <Avatar
                       size={"sm"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
+                      src={
+                        user.profile_picture ??
+                        "https://avatars.dicebear.com/api/male/username.svg"
+                      }
                     />
                   </MenuButton>
                 ) : (
@@ -67,24 +72,44 @@ export const Navbar: React.FC<props> = ({ hideSignIn = false }) => {
                     </Button>
                   )
                 )}
-                <MenuList alignItems={"center"}>
-                  <br />
-                  <Center>
-                    <Avatar
-                      size={"2xl"}
-                      src={"https://avatars.dicebear.com/api/male/username.svg"}
-                    />
-                  </Center>
-                  <br />
-                  <Center>
-                    <p>Username</p>
-                  </Center>
-                  <br />
-                  <MenuDivider />
-                  <MenuItem>Your Servers</MenuItem>
-                  <MenuItem>Account Settings</MenuItem>
-                  <MenuItem>Logout</MenuItem>
-                </MenuList>
+                {user !== null && (
+                  <MenuList alignItems={"center"}>
+                    <br />
+                    <Center>
+                      <Avatar
+                        size={"2xl"}
+                        src={
+                          user.profile_picture ??
+                          "https://avatars.dicebear.com/api/male/username.svg"
+                        }
+                      />
+                    </Center>
+                    <br />
+                    <Center>
+                      <p>
+                        {user.first_name} {user.last_name}
+                      </p>
+                    </Center>
+                    <Center>
+                      <p>@{user.username}</p>
+                    </Center>
+                    <br />
+                    <MenuDivider />
+                    <MenuItem onClick={() => navigate("/changepassword")}>
+                      Change Password
+                    </MenuItem>
+                    <MenuItem onClick={() => navigate("/completeprofile")}>
+                      Complete Profile
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        logout();
+                      }}
+                    >
+                      Logout
+                    </MenuItem>
+                  </MenuList>
+                )}
               </Menu>
             </Stack>
           </Flex>
