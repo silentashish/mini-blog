@@ -132,7 +132,7 @@ export const TweetGrid: React.FC<any> = ({
             }}
           />
         )}
-        <Flex alignItems={"flex-start"} mt={backNav ? 5 : undefined}>
+        <Flex mt={backNav ? 5 : undefined}>
           <Avatar
             size={["md", "lg"]}
             src={user.profile_picture}
@@ -140,7 +140,7 @@ export const TweetGrid: React.FC<any> = ({
             pos={"relative"}
             onClick={goToProfile}
           />
-          <Box mt={1} ml={3} width={"100%"}>
+          <Box mt={1} ml={3} width={"100%"} flex={1} overflow={"hidden"}>
             <Flex justify={"space-between"} width={"100%"}>
               <Flex align={"center"} flexWrap={"wrap"}>
                 <Heading fontSize={["lg", "xl"]}>

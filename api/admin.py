@@ -47,6 +47,9 @@ class UserChangeForm(forms.ModelForm):
     disabled password hash display field.
     """
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     password = ReadOnlyPasswordHashField()
 
     class Meta:
@@ -85,7 +88,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal info", {"fields": ("username",)}),
-        ("Permissions", {"fields": ("is_admin",)}),
+        ("Permissions", {"fields": ("is_admin", "is_active")}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -101,6 +104,10 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email",)
     ordering = ("email",)
     filter_horizontal = ()
+
+    def has_delete_permission(self, request, obj=None):
+        # Disable delete
+        return False
 
 
 # Now register the new UserAdmin...
