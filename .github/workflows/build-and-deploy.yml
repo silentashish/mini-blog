@@ -41,9 +41,7 @@ jobs:
         run: if [ ! -z "$(doctl registry repository list | grep "$(echo $IMAGE_NAME)")" ]; then doctl registry repository delete-manifest $(echo $IMAGE_NAME) $(doctl registry repository list-tags $(echo $IMAGE_NAME) | grep -o "sha.*") --force; else echo "No repository"; fi
 
       - name: Tag image
-        run:
-          docker tag $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) \
-          registry.digitalocean.com/min-blog-registry/miniblog:$(echo $GITHUB_SHA | head -c7)
+        run: docker tag $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) registry.digitalocean.com/min-blog-registry/miniblog:$(echo $GITHUB_SHA | head -c7)
 
       - name: Push image to DigitalOcean Container Registry
         run: docker push registry.digitalocean.com/min-blog-registry/miniblog:$(echo $GITHUB_SHA | head -c7)
