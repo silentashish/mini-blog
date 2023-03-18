@@ -2,6 +2,7 @@ version: '3'
  
 services:
   react:
+      image: registry.digitalocean.com/min-blog-registry/react:latest
       build:
         context: ./frontend
         dockerfile: ./Dockerfile.production
@@ -13,6 +14,7 @@ services:
         - app
 
   app:
+    image: registry.digitalocean.com/min-blog-registry/app:latest
     build:
       context: .
       dockerfile: ./Dockerfile.production
