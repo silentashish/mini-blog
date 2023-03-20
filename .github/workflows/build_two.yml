@@ -20,20 +20,20 @@ env:
 
 #3
 jobs:
-  build_and_push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v2
+  # build_and_push:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout the repo
+  #       uses: actions/checkout@v2
 
-      - name: Login into container registry
-        run: docker login $(echo $REGISTRY) -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  #     - name: Login into container registry
+  #       run: docker login $(echo $REGISTRY) -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      - name: Build container image
-        run: docker-compose build
+  #     - name: Build container image
+  #       run: docker-compose build
 
-      - name: Push docker container to registry
-        run: docker-compose push
+  #     - name: Push docker container to registry
+  #       run: docker-compose push
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,8 +48,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "./docker-compose.yml"
-          target: "docker-compose.yml"
+          source: "*"
+          target: "src"
 
       - name: Deploy to Digital Ocean droplet via SSH action
         uses: appleboy/ssh-action@v0.1.8
@@ -61,6 +61,7 @@ jobs:
           envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }},GITHUB_SHA
           script: |
             # Login to registry
+            cd src
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             # Stop running container
             docker-compose pull
